@@ -1,5 +1,26 @@
 {
   "common": {
     "appName": "TodoNow"
+  },
+  "privacy": {
+    "title": "Privacy notice",
+    "intro": "This notice explains what personal data TodoNow stores about you and why.",
+    "dataTitle": "What we store and why",
+    "data": {
+      "email": "Your email address: to identify your account, let you log in and send you emails about your account, such as a password reset link.",
+      "displayName": "Your display name: so the people in your family can see who shared or finished a task.",
+      "password": "Your password: stored only in a non-readable form, to check it when you log in. Nobody, including us, can read it.",
+      "tasks": "Your tasks and who you share them with: to show them to you and to the people you share them with.",
+      "family": "Your family membership: so you can share tasks with the members of your family.",
+      "agreement": "Your agreement to this notice: to record that you accepted it when you signed up."
+    },
+    "protectTitle": "How we protect your data",
+    "protect": {
+      "encrypted": "All connections between your device and TodoNow are encrypted.",
+      "access": "You see only your own tasks and the tasks shared with you.",
+      "deletion": "When you delete your account, your personal data is removed.",
+      "noSharing": "We never share your personal data with anyone else and never sell it."
+    },
+    "backToSignUp": "Back to sign-up"
   }
 }
