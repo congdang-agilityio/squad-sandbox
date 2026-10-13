@@ -25,6 +25,20 @@
   },
   "signup": {
     "title": "Đăng ký",
-    "privacyLink": "Đọc thông báo về quyền riêng tư"
+    "privacyLink": "Đọc thông báo về quyền riêng tư",
+    "emailLabel": "Email",
+    "passwordLabel": "Mật khẩu",
+    "passwordRule": "Ít nhất 8 ký tự, gồm ít nhất một chữ thường (a-z), một chữ hoa (A-Z), một chữ số (0-9) và một ký hiệu trên bàn phím như ! @ # $. Chỉ dùng chữ cái không dấu, chữ số và ký hiệu trên bàn phím: không được dùng chữ có dấu tiếng Việt (như ă, ê, ư) và không được dùng dấu cách.",
+    "displayNameLabel": "Tên hiển thị",
+    "agreeLabel": "Tôi đồng ý với thông báo về quyền riêng tư",
+    "agreePrivacyLink": "Mở thông báo về quyền riêng tư",
+    "submit": "Tạo tài khoản",
+    "success": "Đã tạo tài khoản",
+    "loginLink": "Đăng nhập",
+    "errorAgreementRequired": "Bạn cần đồng ý với thông báo về quyền riêng tư để tạo tài khoản.",
+    "errorEmailTaken": "Email này đã được đăng ký.",
+    "errorPasswordRule": "Mật khẩu này chưa đúng quy tắc mật khẩu.",
+    "errorInvalidInput": "Vui lòng nhập địa chỉ email hợp lệ và tên hiển thị.",
+    "errorUnexpected": "Đã có lỗi xảy ra. Vui lòng thử lại."
   }
 }

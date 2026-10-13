@@ -25,6 +25,20 @@
   },
   "signup": {
     "title": "Sign up",
-    "privacyLink": "Read the privacy notice"
+    "privacyLink": "Read the privacy notice",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "passwordRule": "At least 8 characters, with at least one lowercase letter (a-z), one uppercase letter (A-Z), one digit (0-9) and one keyboard symbol such as ! @ # $. Use only letters without marks, digits and keyboard symbols: letters with Vietnamese marks (such as ă, ê, ư) and spaces cannot be used.",
+    "displayNameLabel": "Display name",
+    "agreeLabel": "I agree to the privacy notice",
+    "agreePrivacyLink": "Open the privacy notice",
+    "submit": "Create account",
+    "success": "Account created",
+    "loginLink": "Log in",
+    "errorAgreementRequired": "Agreement to the privacy notice is required to create an account.",
+    "errorEmailTaken": "This email is already registered.",
+    "errorPasswordRule": "This password does not meet the password rule.",
+    "errorInvalidInput": "Please enter a valid email address and a display name.",
+    "errorUnexpected": "Something went wrong. Please try again."
   }
 }
