@@ -7,15 +7,10 @@ function isFormat(value: string): value is Format {
   return (ALLOWED_FORMATS as readonly string[]).includes(value);
 }
 
-/**
- * Resolves the `format` query parameter. Absent means `short`; anything other than
- * exactly one `short` or `full` value (empty, repeated, unknown) is invalid.
- */
+/** Resolves the `format` query parameter; anything that is not `full` means `short`. */
 function parseFormat(searchParams: URLSearchParams): Format | null {
-  const values = searchParams.getAll('format');
-  if (values.length === 0) return 'short';
-  if (values.length > 1) return null;
-  return isFormat(values[0]) ? values[0] : null;
+  const value = searchParams.get('format');
+  return value === 'full' ? 'full' : 'short';
 }
 
 export function GET(request: Request): Response {
