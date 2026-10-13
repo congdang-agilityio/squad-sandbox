@@ -9,6 +9,8 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    // Integration test files share one PostgreSQL database and truncate it between tests.
+    fileParallelism: false,
     globals: true,
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['@testing-library/jest-dom/vitest'],
