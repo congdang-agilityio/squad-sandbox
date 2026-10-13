@@ -25,6 +25,7 @@
     "printWidth": 100
   },
   "dependencies": {
+    "@node-rs/argon2": "2.2.2",
     "@prisma/client": "6.19.3",
     "next": "15.5.27",
     "next-intl": "4.14.9",
