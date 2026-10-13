@@ -22,5 +22,9 @@
       "noSharing": "We never share your personal data with anyone else and never sell it."
     },
     "backToSignUp": "Back to sign-up"
+  },
+  "signup": {
+    "title": "Sign up",
+    "privacyLink": "Read the privacy notice"
   }
 }
