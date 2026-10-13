@@ -1,2 +1,3 @@
-# squad-sandbox
-Sandbox for testing the squad Claude Code plugin
+# squad sandbox
+
+Test repository for the squad plugin.
