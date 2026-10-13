@@ -3,6 +3,15 @@ import { db, resetDatabase } from '@/__tests__/helpers/db';
 import { POST } from './route';
 
 const PASSWORD = 'Str0ng!Pass';
+const DOMAIN = '@example.com';
+
+function emailOfLength(length: number): string {
+  return 'a'.repeat(length - DOMAIN.length) + DOMAIN;
+}
+
+function passwordOfLength(length: number): string {
+  return PASSWORD + 'x'.repeat(length - PASSWORD.length);
+}
 
 const valid = {
   email: 'ana@example.com',
@@ -52,12 +61,28 @@ describe('POST /api/auth/sign-up', () => {
     ['array body', [valid]],
     ['null body', null],
     ['invalid email shape', { ...valid, email: 'not-an-email' }],
+    ['blank displayName', { ...valid, displayName: '   ' }],
+    ['email longer than 254 characters', { ...valid, email: emailOfLength(255) }],
+    ['very long email', { ...valid, email: emailOfLength(5000) }],
+    ['password longer than 128 characters', { ...valid, password: passwordOfLength(129) }],
+    ['displayName longer than 100 characters', { ...valid, displayName: 'A'.repeat(101) }],
   ])('returns 400 INVALID_INPUT for %s and creates no user', async (_label, body) => {
     const res = await POST(request(body));
 
     expect(res.status).toBe(400);
     expect(await res.json()).toEqual({ error: 'INVALID_INPUT' });
     expect(await db.user.count()).toBe(0);
+  });
+
+  it.each([
+    ['an email of exactly 254 characters', { ...valid, email: emailOfLength(254) }],
+    ['a password of exactly 128 characters', { ...valid, password: passwordOfLength(128) }],
+    ['a displayName of exactly 100 characters', { ...valid, displayName: 'A'.repeat(100) }],
+  ])('accepts %s and returns 201', async (_label, body) => {
+    const res = await POST(request(body));
+
+    expect(res.status).toBe(201);
+    expect(await db.user.count()).toBe(1);
   });
 
   it('returns 400 INVALID_INPUT for a non-JSON body and creates no user', async () => {
