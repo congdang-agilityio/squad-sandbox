@@ -1,4 +1,8 @@
+import { existsSync } from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
+
+// Local runs take the slot's PORT and DATABASE_URL from .env.local; CI sets them directly.
+if (existsSync('.env.local')) process.loadEnvFile('.env.local');
 
 const port = Number(process.env.PORT ?? 3000);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {

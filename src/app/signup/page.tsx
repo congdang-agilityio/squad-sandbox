@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { SignUpForm } from './sign-up-form';
 
 // Public page: no login check. The privacy notice link stays above the form.
 export default function SignUpPage() {
@@ -11,7 +12,7 @@ export default function SignUpPage() {
       <p>
         <Link href="/privacy">{t('privacyLink')}</Link>
       </p>
-      {/* The sign-up form (story #35) goes here. */}
+      <SignUpForm />
     </main>
   );
 }
