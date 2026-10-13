@@ -13,6 +13,9 @@
     "lint": "eslint . && prettier --check src e2e \"*.{ts,mjs}\" package.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "db:migrate": "node --env-file-if-exists=.env.local node_modules/prisma/build/index.js migrate dev",
+    "db:deploy": "node --env-file-if-exists=.env.local node_modules/prisma/build/index.js migrate deploy",
+    "postinstall": "prisma generate",
     "format": "prettier --write src e2e \"*.{ts,mjs}\" package.json"
   },
   "prettier": {
@@ -22,7 +25,9 @@
     "printWidth": 100
   },
   "dependencies": {
+    "@prisma/client": "6.19.3",
     "next": "15.5.27",
+    "prisma": "6.19.3",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
