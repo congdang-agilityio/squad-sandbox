@@ -1,5 +1,26 @@
 {
   "common": {
     "appName": "TodoNow"
+  },
+  "privacy": {
+    "title": "Thông báo về quyền riêng tư",
+    "intro": "Thông báo này cho bạn biết TodoNow lưu những dữ liệu cá nhân nào của bạn và vì sao.",
+    "dataTitle": "Chúng tôi lưu gì và vì sao",
+    "data": {
+      "email": "Địa chỉ email của bạn: để nhận diện tài khoản, cho bạn đăng nhập và gửi cho bạn các email về tài khoản, ví dụ liên kết đặt lại mật khẩu.",
+      "displayName": "Tên hiển thị của bạn: để các thành viên trong gia đình thấy ai đã chia sẻ hoặc hoàn thành một việc.",
+      "password": "Mật khẩu của bạn: chỉ được lưu ở dạng không thể đọc được, để kiểm tra khi bạn đăng nhập. Không ai, kể cả chúng tôi, đọc được mật khẩu này.",
+      "tasks": "Các việc của bạn và người bạn chia sẻ việc: để hiển thị các việc đó cho bạn và cho những người bạn chia sẻ.",
+      "family": "Gia đình bạn tham gia: để bạn có thể chia sẻ việc với các thành viên trong gia đình.",
+      "agreement": "Việc bạn đồng ý với thông báo này: để ghi nhận rằng bạn đã chấp nhận thông báo khi đăng ký."
+    },
+    "protectTitle": "Chúng tôi bảo vệ dữ liệu của bạn như thế nào",
+    "protect": {
+      "encrypted": "Mọi kết nối giữa thiết bị của bạn và TodoNow đều được mã hóa.",
+      "access": "Bạn chỉ thấy các việc của mình và các việc được chia sẻ với bạn.",
+      "deletion": "Khi bạn xóa tài khoản, dữ liệu cá nhân của bạn sẽ bị xóa.",
+      "noSharing": "Chúng tôi không bao giờ chia sẻ dữ liệu cá nhân của bạn với người khác và không bao giờ bán dữ liệu đó."
+    },
+    "backToSignUp": "Quay lại trang đăng ký"
   }
 }
