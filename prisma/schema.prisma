@@ -19,6 +19,7 @@ model User {
   updatedAt             DateTime @updatedAt
   sessions              Session[]
   passwordResetTokens   PasswordResetToken[]
+  tasks                 Task[]
 }
 
 /// A login on one device. Only a hash of the session token is stored. There is no expiry:
@@ -47,4 +48,27 @@ model PasswordResetToken {
   createdAt DateTime  @default(now())
 
   @@index([userId])
+}
+
+enum TaskPriority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+/// A to-do item owned by its creator (BR-02: title and due date required, time optional;
+/// BR-03: priority defaults to Normal). CHECK constraints in the migration reject a blank
+/// `title` and a `dueTime` that is not `HH:MM` 24-hour.
+model Task {
+  id        String       @id @default(cuid())
+  ownerId   String
+  owner     User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title     String
+  dueDate   DateTime     @db.Date
+  dueTime   String?
+  priority  TaskPriority @default(NORMAL)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([ownerId])
 }
