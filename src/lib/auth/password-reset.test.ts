@@ -206,6 +206,26 @@ describe('password reset', () => {
       expect(await authenticate('ana@example.com', NEW_PASSWORD)).toBe(userId);
     });
 
+    it('lets only one of two concurrent resets with the same token succeed', async () => {
+      const userId = await createUser();
+      const token = await requestToken();
+      const passwords = [NEW_PASSWORD, 'An0ther!Pass'];
+
+      // Both calls pass the token pre-check while argon2 hashes, so only the atomic claim in the
+      // transaction can stop the second one.
+      const results = await Promise.all(
+        passwords.map((password) => resetPassword(token, password)),
+      );
+
+      expect(results.filter((result) => result.ok)).toHaveLength(1);
+      expect(results).toContainEqual({ ok: false, error: 'INVALID_TOKEN' });
+      const winner = passwords[results.findIndex((result) => result.ok)];
+      const loser = passwords.find((password) => password !== winner) as string;
+      expect(await authenticate('ana@example.com', winner)).toBe(userId);
+      expect(await authenticate('ana@example.com', loser)).toBeNull();
+      expect(await authenticate('ana@example.com', OLD_PASSWORD)).toBeNull();
+    });
+
     it('refuses an expired token and keeps the old password', async () => {
       const userId = await createUser();
       const token = await requestToken();
