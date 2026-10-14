@@ -1,8 +1,10 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { requireUser } from '@/lib/auth/require-user';
 
 // Placeholder: the real task list comes with stories S-05 and S-06.
-export default function TasksPage() {
-  const t = useTranslations('tasks');
+export default async function TasksPage() {
+  await requireUser();
+  const t = await getTranslations('tasks');
 
   return (
     <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem', lineHeight: 1.5 }}>
