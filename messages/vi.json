@@ -58,7 +58,12 @@
   },
   "tasks": {
     "title": "Việc của tôi",
-    "empty": "Bạn chưa có việc nào."
+    "empty": "Bạn chưa có việc nào.",
+    "due": "Hạn {date}",
+    "priority": "Mức ưu tiên: {priority}",
+    "priorityHigh": "Cao",
+    "priorityNormal": "Bình thường",
+    "priorityLow": "Thấp"
   },
   "logout": {
     "button": "Đăng xuất",

@@ -58,7 +58,12 @@
   },
   "tasks": {
     "title": "My tasks",
-    "empty": "You have no tasks yet."
+    "empty": "You have no tasks yet.",
+    "due": "Due {date}",
+    "priority": "Priority: {priority}",
+    "priorityHigh": "High",
+    "priorityNormal": "Normal",
+    "priorityLow": "Low"
   },
   "logout": {
     "button": "Log out",
