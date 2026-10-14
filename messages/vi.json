@@ -54,5 +54,9 @@
   "tasks": {
     "title": "Việc của tôi",
     "empty": "Bạn chưa có việc nào."
+  },
+  "logout": {
+    "button": "Đăng xuất",
+    "error": "Không thể đăng xuất. Vui lòng thử lại."
   }
 }

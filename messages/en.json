@@ -54,5 +54,9 @@
   "tasks": {
     "title": "My tasks",
     "empty": "You have no tasks yet."
+  },
+  "logout": {
+    "button": "Log out",
+    "error": "Could not log out. Please try again."
   }
 }
