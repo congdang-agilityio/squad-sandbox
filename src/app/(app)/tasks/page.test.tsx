@@ -8,6 +8,8 @@ import TasksPage from './page';
 
 vi.mock('@/lib/auth/require-user', () => ({ requireUser: vi.fn() }));
 vi.mock('next-intl/server', () => ({ getTranslations: vi.fn() }));
+// The client component has its own tests; here it only has to be on the page.
+vi.mock('./logout-button', () => ({ LogoutButton: () => <button type="button">logout</button> }));
 
 const user = { id: 'u1', email: 'ana@example.com', displayName: 'Ana' };
 
@@ -43,6 +45,15 @@ describe('Task list page', () => {
       screen.getByRole('heading', { level: 1, name: messages.tasks.title }),
     ).toBeInTheDocument();
     expect(screen.getByText(messages.tasks.empty)).toBeInTheDocument();
+  });
+
+  it('shows the log out button', async () => {
+    vi.mocked(requireUser).mockResolvedValue(user);
+    withLocale('en', en);
+
+    render(await TasksPage());
+
+    expect(screen.getByRole('button', { name: 'logout' })).toBeInTheDocument();
   });
 
   it('shows "My tasks" in English', () => {
