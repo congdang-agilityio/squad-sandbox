@@ -1,7 +1,6 @@
+import { redirect } from 'next/navigation';
+
+// The middleware has already sent visitors without a session to /login.
 export default function Home() {
-  return (
-    <main>
-      <h1>TodoNow</h1>
-    </main>
-  );
+  redirect('/tasks');
 }

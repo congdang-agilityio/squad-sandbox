@@ -27,7 +27,8 @@ export default defineConfig({
   ],
   webServer: {
     command: `npm run build && npm run start -- --port ${port}`,
-    url: baseURL,
+    // Not `/`: it redirects visitors to /login, which may not exist yet.
+    url: `${baseURL}/api/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
   },

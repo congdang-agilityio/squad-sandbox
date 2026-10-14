@@ -40,5 +40,9 @@
     "errorPasswordRule": "This password does not meet the password rule.",
     "errorInvalidInput": "Please enter a valid email address and a display name.",
     "errorUnexpected": "Something went wrong. Please try again."
+  },
+  "tasks": {
+    "title": "My tasks",
+    "empty": "You have no tasks yet."
   }
 }

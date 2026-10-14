@@ -9,7 +9,7 @@ for (const [browserLocale, expected] of [
     test.use({ locale: browserLocale });
 
     test(`renders the page with <html lang="${expected}">`, async ({ page }) => {
-      await page.goto('/');
+      await page.goto('/signup');
       await expect(page.locator('html')).toHaveAttribute('lang', expected);
     });
   });
