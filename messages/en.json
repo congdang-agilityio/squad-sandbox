@@ -41,6 +41,16 @@
     "errorInvalidInput": "Please enter a valid email address and a display name.",
     "errorUnexpected": "Something went wrong. Please try again."
   },
+  "login": {
+    "title": "Log in",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Log in",
+    "noAccount": "No account yet?",
+    "signUpLink": "Sign up",
+    "errorInvalidCredentials": "The email or password is incorrect.",
+    "errorUnexpected": "Something went wrong. Please try again."
+  },
   "tasks": {
     "title": "My tasks",
     "empty": "You have no tasks yet."
