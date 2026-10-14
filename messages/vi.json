@@ -53,7 +53,28 @@
     "submit": "Đăng nhập",
     "noAccount": "Chưa có tài khoản?",
     "signUpLink": "Đăng ký",
+    "forgotPasswordLink": "Quên mật khẩu?",
     "errorInvalidCredentials": "Email hoặc mật khẩu không đúng.",
+    "errorUnexpected": "Đã có lỗi xảy ra. Vui lòng thử lại."
+  },
+  "forgotPassword": {
+    "title": "Quên mật khẩu",
+    "intro": "Nhập email của tài khoản. Chúng tôi sẽ gửi cho bạn một liên kết để đặt mật khẩu mới.",
+    "emailLabel": "Email",
+    "submit": "Gửi liên kết đặt lại",
+    "sent": "Nếu có tài khoản với email này, chúng tôi đã gửi một email có liên kết để đặt mật khẩu mới. Liên kết chỉ dùng được một lần và hết hạn sau 1 giờ.",
+    "loginLink": "Quay lại đăng nhập",
+    "errorUnexpected": "Đã có lỗi xảy ra. Vui lòng thử lại."
+  },
+  "resetPassword": {
+    "title": "Đặt mật khẩu mới",
+    "passwordLabel": "Mật khẩu mới",
+    "submit": "Lưu mật khẩu mới",
+    "success": "Mật khẩu mới của bạn đã được lưu.",
+    "loginLink": "Đăng nhập",
+    "invalidLink": "Liên kết này không hợp lệ hoặc đã hết hạn.",
+    "forgotPasswordLink": "Yêu cầu liên kết mới",
+    "errorPasswordRule": "Mật khẩu này chưa đúng quy tắc mật khẩu.",
     "errorUnexpected": "Đã có lỗi xảy ra. Vui lòng thử lại."
   },
   "tasks": {

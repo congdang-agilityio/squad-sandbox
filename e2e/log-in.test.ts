@@ -38,13 +38,19 @@ test('opening /tasks while logged out shows the login screen and no task page', 
   await expect(page.getByText('You have no tasks yet.')).toHaveCount(0);
 });
 
-test('offers only email and password login, plus a link to sign up', async ({ page }) => {
+test('offers only email and password login, plus links to reset the password and to sign up', async ({
+  page,
+}) => {
   await page.goto('/login');
   const main = page.getByRole('main');
 
   await expect(main.getByRole('button')).toHaveCount(1);
   await expect(main.getByRole('button', { name: 'Log in' })).toBeVisible();
-  await expect(main.getByRole('link')).toHaveCount(1);
+  await expect(main.getByRole('link')).toHaveCount(2);
+  await expect(main.getByRole('link', { name: 'Forgot password?' })).toHaveAttribute(
+    'href',
+    '/forgot-password',
+  );
   await expect(main.getByRole('link', { name: 'Sign up' })).toHaveAttribute('href', '/signup');
   await expect(page.getByText(/google|facebook|apple|microsoft/i)).toHaveCount(0);
 });
