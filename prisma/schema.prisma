@@ -17,4 +17,19 @@ model User {
   privacyNoticeAgreedAt DateTime
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+  sessions              Session[]
+}
+
+/// A login on one device. Only a hash of the session token is stored. There is no expiry:
+/// a login lasts until logout or account deletion (A-19).
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String   @unique
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+  userAgent  String?
+
+  @@index([userId])
 }
