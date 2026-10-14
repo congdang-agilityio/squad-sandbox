@@ -1,4 +1,6 @@
 import { existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 
 // Local runs take the slot's PORT and DATABASE_URL from .env.local; CI sets them directly.
@@ -9,6 +11,10 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) {
   throw new Error(`Invalid PORT: ${process.env.PORT}`);
 }
 const baseURL = `http://localhost:${port}`;
+
+// The web server writes emails here instead of sending them; tests read the same path.
+const mailOutboxDir = join(tmpdir(), `todonow-outbox-${port}`);
+process.env.MAIL_OUTBOX_DIR = mailOutboxDir;
 
 export default defineConfig({
   testDir: 'e2e',
@@ -33,6 +39,7 @@ export default defineConfig({
     timeout: 180_000,
     // `next start` runs with NODE_ENV=production, so the session cookie would be Secure, and
     // WebKit does not store a Secure cookie on http://localhost.
-    env: { SESSION_COOKIE_SECURE: 'false' },
+    // SMTP_URL is cleared so e2e never sends a real email.
+    env: { SESSION_COOKIE_SECURE: 'false', SMTP_URL: '', MAIL_OUTBOX_DIR: mailOutboxDir },
   },
 });
