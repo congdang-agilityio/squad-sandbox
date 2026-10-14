@@ -70,3 +70,13 @@ export async function getSessionUser(token: string): Promise<SessionUser | null>
   }
   return session.user;
 }
+
+/**
+ * Ends the login on the one device the token belongs to. Other sessions and the user are kept.
+ * A malformed, unknown or already-ended token does nothing.
+ */
+export async function deleteSession(token: string): Promise<void> {
+  if (typeof token !== 'string' || !TOKEN_SHAPE.test(token)) return;
+
+  await db.session.deleteMany({ where: { tokenHash: hashToken(token) } });
+}

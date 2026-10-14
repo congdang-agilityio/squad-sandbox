@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { db, resetDatabase } from '@/__tests__/helpers/db';
 import {
   createSession,
+  deleteSession,
   getSessionUser,
   isSessionCookieSecure,
   SESSION_COOKIE_NAME,
@@ -11,12 +12,12 @@ import {
 
 const HOUR_MS = 60 * 60 * 1000;
 
-async function createUser(): Promise<string> {
+async function createUser(email = 'ana@example.com', displayName = 'Ana'): Promise<string> {
   const user = await db.user.create({
     data: {
-      email: 'ana@example.com',
+      email,
       passwordHash: '$argon2id$v=19$m=19456,t=2,p=1$c2FsdA$aGFzaA',
-      displayName: 'Ana',
+      displayName,
       privacyNoticeAgreedAt: new Date(),
     },
   });
@@ -30,6 +31,7 @@ describe('session', () => {
 
   afterEach(() => {
     vi.unstubAllEnvs();
+    vi.restoreAllMocks();
   });
 
   afterAll(async () => {
@@ -124,6 +126,72 @@ describe('session', () => {
 
     const { lastUsedAt } = await db.session.findFirstOrThrow();
     expect(lastUsedAt.getTime()).toBe(recent.getTime());
+  });
+
+  describe('deleteSession', () => {
+    it('ends only the login of phone A; phone B and other users stay logged in', async () => {
+      const anaId = await createUser();
+      const bobId = await createUser('bob@example.com', 'Bob');
+      const phoneA = await createSession(anaId, 'Phone A');
+      const phoneB = await createSession(anaId, 'Phone B');
+      const bobPhone = await createSession(bobId, 'Bob phone');
+
+      await deleteSession(phoneA);
+
+      expect(await getSessionUser(phoneA)).toBeNull();
+      expect(await getSessionUser(phoneB)).toMatchObject({ id: anaId, email: 'ana@example.com' });
+      expect(await getSessionUser(bobPhone)).toMatchObject({ id: bobId, email: 'bob@example.com' });
+      expect(await db.session.count()).toBe(2);
+      expect(await db.user.count()).toBe(2);
+      expect(await db.user.findUnique({ where: { id: anaId } })).toMatchObject({
+        email: 'ana@example.com',
+        displayName: 'Ana',
+      });
+    });
+
+    it('is safe to call twice for the same token', async () => {
+      const userId = await createUser();
+      const phoneA = await createSession(userId, 'Phone A');
+      const phoneB = await createSession(userId, 'Phone B');
+
+      await deleteSession(phoneA);
+      await expect(deleteSession(phoneA)).resolves.toBeUndefined();
+
+      expect(await getSessionUser(phoneA)).toBeNull();
+      expect(await getSessionUser(phoneB)).toMatchObject({ id: userId });
+      expect(await db.session.count()).toBe(1);
+    });
+
+    it('does nothing for an unknown token', async () => {
+      await createSession(await createUser(), 'Phone A');
+      await createSession(await createUser('bob@example.com', 'Bob'), null);
+
+      const unknown = Buffer.alloc(32, 7).toString('base64url');
+      await expect(deleteSession(unknown)).resolves.toBeUndefined();
+
+      expect(await db.session.count()).toBe(2);
+    });
+
+    it.each([
+      ['empty', ''],
+      ['too short', 'abc'],
+      ['bad characters', '!'.repeat(43)],
+      ['too long', 'a'.repeat(44)],
+      ['non-string', 42],
+      ['undefined', undefined],
+      ['null', null],
+    ])(
+      'does nothing and makes no database call for a malformed token (%s)',
+      async (_label, token) => {
+        await createSession(await createUser(), 'Phone A');
+        const deleteMany = vi.spyOn(db.session, 'deleteMany');
+
+        await expect(deleteSession(token as unknown as string)).resolves.toBeUndefined();
+
+        expect(deleteMany).not.toHaveBeenCalled();
+        expect(await db.session.count()).toBe(1);
+      },
+    );
   });
 
   it('has cookie options for a long-lived httpOnly lax cookie', () => {
