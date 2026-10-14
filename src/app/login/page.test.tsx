@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import { getCurrentUser } from '@/lib/auth/current-user';
 import en from '../../../messages/en.json';
 import viMessages from '../../../messages/vi.json';
-import LoginPage from './page';
+import LoginPage, { generateMetadata } from './page';
 
 vi.mock('@/lib/auth/current-user', () => ({ getCurrentUser: vi.fn() }));
 vi.mock('next/navigation', () => ({
@@ -39,6 +39,16 @@ describe('Login page', () => {
 
     await expect(LoginPage()).rejects.toThrow('NEXT_REDIRECT /tasks');
     expect(redirect).toHaveBeenCalledWith('/tasks');
+  });
+
+  it.each([
+    ['en', en, 'Log in · TodoNow'],
+    ['vi', viMessages, 'Đăng nhập · TodoNow'],
+  ] as const)('sets the %s browser tab title', async (locale, messages, title) => {
+    intl.locale = locale;
+    intl.messages = messages;
+
+    await expect(generateMetadata()).resolves.toEqual({ title });
   });
 
   it.each([
