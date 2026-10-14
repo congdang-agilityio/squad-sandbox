@@ -1,9 +1,16 @@
-import { render, screen } from '@testing-library/react';
 import Home from './page';
 
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn((url: string) => {
+    throw new Error(`NEXT_REDIRECT ${url}`);
+  }),
+}));
+
+const { redirect } = await import('next/navigation');
+
 describe('Home page', () => {
-  it('shows the TodoNow name', () => {
-    render(<Home />);
-    expect(screen.getByRole('heading', { level: 1, name: 'TodoNow' })).toBeInTheDocument();
+  it('sends the user to the task list', () => {
+    expect(() => Home()).toThrow('NEXT_REDIRECT /tasks');
+    expect(redirect).toHaveBeenCalledWith('/tasks');
   });
 });

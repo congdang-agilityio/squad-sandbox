@@ -40,5 +40,9 @@
     "errorPasswordRule": "Mật khẩu này chưa đúng quy tắc mật khẩu.",
     "errorInvalidInput": "Vui lòng nhập địa chỉ email hợp lệ và tên hiển thị.",
     "errorUnexpected": "Đã có lỗi xảy ra. Vui lòng thử lại."
+  },
+  "tasks": {
+    "title": "Việc của tôi",
+    "empty": "Bạn chưa có việc nào."
   }
 }
