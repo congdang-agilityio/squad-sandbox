@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import en from '../../../messages/en.json';
 import viMessages from '../../../messages/vi.json';
@@ -59,7 +59,8 @@ describe('SignUpForm', () => {
       const password = screen.getByLabelText(t.passwordLabel);
       expect(password).toHaveAttribute('type', 'password');
       expect(password).toHaveAttribute('autocomplete', 'new-password');
-      expect(password).toHaveAccessibleDescription(t.passwordRule);
+      expect(password).toHaveAccessibleDescription(messages.passwordRule.rule);
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
       expect(screen.getByLabelText(t.displayNameLabel)).toBeInTheDocument();
       expect(screen.getByRole('checkbox', { name: t.agreeLabel })).not.toBeChecked();
       expect(screen.getByRole('link', { name: t.agreePrivacyLink })).toHaveAttribute(
@@ -69,13 +70,6 @@ describe('SignUpForm', () => {
       expect(screen.getByRole('button', { name: t.submit })).toBeInTheDocument();
     },
   );
-
-  it('states in plain words that marked letters and spaces cannot be used', () => {
-    expect(en.signup.passwordRule).toMatch(/Vietnamese marks/);
-    expect(en.signup.passwordRule).toMatch(/spaces/);
-    expect(viMessages.signup.passwordRule).toMatch(/có dấu/);
-    expect(viMessages.signup.passwordRule).toMatch(/dấu cách/);
-  });
 
   it('posts the typed values as JSON and shows the success message with a log in link on 201', async () => {
     respond(201, { ok: true });
@@ -120,15 +114,73 @@ describe('SignUpForm', () => {
     },
   );
 
-  it('shows the password rule when the password breaks it', async () => {
-    respond(400, { error: 'PASSWORD_RULE', failures: ['noSymbol'] });
+  it.each([
+    [['tooShort'], [en.passwordRule.tooShort]],
+    [['noSymbol'], [en.passwordRule.missingType]],
+    [['invalidCharacter'], [en.passwordRule.invalidCharacter]],
+    [
+      ['tooShort', 'noUppercase', 'noDigit', 'invalidCharacter'],
+      [en.passwordRule.tooShort, en.passwordRule.missingType, en.passwordRule.invalidCharacter],
+    ],
+  ])(
+    'on PASSWORD_RULE %j shows the matching refusal messages and keeps the rule linked',
+    async (failures, messages) => {
+      respond(400, { error: 'PASSWORD_RULE', failures });
+      renderForm();
+      fillIn();
+      submit();
+
+      const alert = await screen.findByRole('alert');
+      expect(
+        within(alert)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent),
+      ).toEqual(messages);
+      expect(screen.getAllByRole('alert')).toHaveLength(1);
+      const password = screen.getByLabelText('Password');
+      expect(password).toHaveValue('');
+      expect(password).toHaveAccessibleDescription(en.passwordRule.rule);
+      expect(screen.getByLabelText('Email')).toHaveValue('an@example.com');
+    },
+  );
+
+  it('shows the refusal message in Vietnamese', async () => {
+    respond(400, { error: 'PASSWORD_RULE', failures: ['invalidCharacter'] });
+    renderForm('vi');
+    fireEvent.click(screen.getByRole('button', { name: viMessages.signup.submit }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      viMessages.passwordRule.invalidCharacter,
+    );
+  });
+
+  it.each([{}, { failures: [] }, { failures: ['boom'] }, { failures: 'tooShort' }])(
+    'on PASSWORD_RULE with unusable failures %j falls back to the general rule error',
+    async (extra) => {
+      respond(400, { error: 'PASSWORD_RULE', ...extra });
+      renderForm();
+      fillIn();
+      submit();
+
+      const alert = await screen.findByRole('alert');
+      expect(alert).toHaveTextContent(en.signup.errorPasswordRule);
+      expect(screen.getAllByRole('alert')).toHaveLength(1);
+    },
+  );
+
+  it('clears the refusal messages when the form is sent again', async () => {
+    respond(400, { error: 'PASSWORD_RULE', failures: ['tooShort'] });
+    respond(409, { error: 'EMAIL_TAKEN' });
     renderForm();
     fillIn();
     submit();
+    expect(await screen.findByRole('alert')).toHaveTextContent(en.passwordRule.tooShort);
 
-    const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent(en.signup.errorPasswordRule);
-    expect(alert).toHaveTextContent(en.signup.passwordRule);
+    submit();
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent(en.signup.errorEmailTaken),
+    );
+    expect(screen.queryByText(en.passwordRule.tooShort)).not.toBeInTheDocument();
   });
 
   it('shows the unexpected error when the network fails', async () => {

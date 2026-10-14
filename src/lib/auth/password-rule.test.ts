@@ -66,4 +66,22 @@ describe('checkPasswordRule', () => {
   it('does not impose a maximum length', () => {
     expect(checkPasswordRule(`Abcdef1!${'a'.repeat(200)}`)).toEqual({ ok: true });
   });
+
+  describe('acceptance criteria examples of #62', () => {
+    it.each([
+      ['Ab1!xyz', 'tooShort'],
+      ['ABCDEFG1!', 'noLowercase'],
+      ['abcdefg1!', 'noUppercase'],
+      ['Abcdefgh!', 'noDigit'],
+      ['Abcdefg12', 'noSymbol'],
+      ['Mậtkhẩu1!', 'invalidCharacter'],
+      ['Abc 123!x', 'invalidCharacter'],
+    ])('refuses %s with only %s', (password, failure) => {
+      expect(checkPasswordRule(password)).toEqual({ ok: false, failures: [failure] });
+    });
+
+    it.each(['Abcdef1!', 'Todo~2027x'])('accepts %s', (password) => {
+      expect(checkPasswordRule(password)).toEqual({ ok: true });
+    });
+  });
 });

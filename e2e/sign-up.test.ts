@@ -47,6 +47,6 @@ test('shows the password rule when the password breaks it', async ({ page }, tes
   await page.goto('/signup');
   await fillForm(page, uniqueEmail(testInfo.project.name), 'password', true);
   const alert = formMessage(page, 'alert');
-  await expect(alert).toContainText('This password does not meet the password rule.');
-  await expect(alert).toContainText('spaces cannot be used');
+  await expect(alert).toContainText('This password does not meet the password rule');
+  await expect(alert).toContainText('it needs at least one lowercase letter (a-z)');
 });
