@@ -14,10 +14,20 @@ const TOKEN_SHAPE = /^[A-Za-z0-9_-]{43}$/;
 
 export type SessionUser = { id: string; email: string; displayName: string };
 
+/**
+ * SESSION_COOKIE_SECURE="true" or "false" decides the Secure flag (e2e over http sets "false");
+ * any other value, or none, falls back to Secure in production only.
+ */
+export function isSessionCookieSecure(): boolean {
+  const setting = process.env.SESSION_COOKIE_SECURE;
+  if (setting === 'true' || setting === 'false') return setting === 'true';
+  return process.env.NODE_ENV === 'production';
+}
+
 export function sessionCookieOptions() {
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isSessionCookieSecure(),
     sameSite: 'lax' as const,
     path: '/',
     maxAge: SESSION_MAX_AGE_SECONDS,

@@ -31,5 +31,8 @@ export default defineConfig({
     url: `${baseURL}/api/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    // `next start` runs with NODE_ENV=production, so the session cookie would be Secure, and
+    // WebKit does not store a Secure cookie on http://localhost.
+    env: { SESSION_COOKIE_SECURE: 'false' },
   },
 });

@@ -4,6 +4,7 @@ import { db, resetDatabase } from '@/__tests__/helpers/db';
 import {
   createSession,
   getSessionUser,
+  isSessionCookieSecure,
   SESSION_COOKIE_NAME,
   sessionCookieOptions,
 } from '@/lib/auth/session';
@@ -141,4 +142,24 @@ describe('session', () => {
 
     expect(sessionCookieOptions().secure).toBe(true);
   });
+
+  it.each([
+    { nodeEnv: 'production', setting: undefined, secure: true },
+    { nodeEnv: 'production', setting: 'true', secure: true },
+    { nodeEnv: 'production', setting: 'false', secure: false },
+    { nodeEnv: 'production', setting: 'yes', secure: true },
+    { nodeEnv: 'test', setting: undefined, secure: false },
+    { nodeEnv: 'test', setting: 'true', secure: true },
+    { nodeEnv: 'test', setting: 'false', secure: false },
+    { nodeEnv: 'test', setting: '1', secure: false },
+  ])(
+    'sets secure=$secure with NODE_ENV=$nodeEnv and SESSION_COOKIE_SECURE=$setting',
+    ({ nodeEnv, setting, secure }) => {
+      vi.stubEnv('NODE_ENV', nodeEnv);
+      vi.stubEnv('SESSION_COOKIE_SECURE', setting);
+
+      expect(isSessionCookieSecure()).toBe(secure);
+      expect(sessionCookieOptions().secure).toBe(secure);
+    },
+  );
 });

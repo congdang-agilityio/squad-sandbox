@@ -60,6 +60,34 @@ describe('middleware', () => {
     );
   });
 
+  describe('Secure flag of the renewed cookie', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it.each([
+      { nodeEnv: 'production', setting: undefined, secure: true },
+      { nodeEnv: 'production', setting: 'true', secure: true },
+      { nodeEnv: 'production', setting: 'false', secure: false },
+      { nodeEnv: 'production', setting: 'yes', secure: true },
+      { nodeEnv: 'test', setting: undefined, secure: false },
+      { nodeEnv: 'test', setting: 'true', secure: true },
+      { nodeEnv: 'test', setting: 'false', secure: false },
+      { nodeEnv: 'test', setting: '1', secure: false },
+    ])(
+      'is $secure with NODE_ENV=$nodeEnv and SESSION_COOKIE_SECURE=$setting, same as the login',
+      ({ nodeEnv, setting, secure }) => {
+        vi.stubEnv('NODE_ENV', nodeEnv);
+        vi.stubEnv('SESSION_COOKIE_SECURE', setting);
+
+        const cookie = middleware(request('/tasks', TOKEN)).cookies.get(SESSION_COOKIE_NAME);
+
+        expect(cookie?.secure ?? false).toBe(secure);
+        expect(cookie?.secure ?? false).toBe(sessionCookieOptions().secure);
+      },
+    );
+  });
+
   it.each(['/', '/tasks', '/tasks/123/edit'])('runs on task page %s', (path) => {
     expect(matches(path)).toBe(true);
   });
