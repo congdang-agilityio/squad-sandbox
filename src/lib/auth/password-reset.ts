@@ -20,21 +20,15 @@ const TOKEN_SHAPE = /^[A-Za-z0-9_-]{43}$/;
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+$/;
 const EMAIL_MAX_LENGTH = 254;
 
-class TokenAlreadyUsedError extends Error {}
-
 function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }
 
 /** Validates the server-provided base URL and returns it without trailing slashes. */
 function normalizeBaseUrl(baseUrl: string): string {
-  let url: URL | null = null;
-  try {
-    url = typeof baseUrl === 'string' ? new URL(baseUrl) : null;
-  } catch {
-    url = null;
-  }
-  if (!url || (url.protocol !== 'https:' && url.protocol !== 'http:')) {
+  const valid = typeof baseUrl === 'string' && URL.canParse(baseUrl);
+  const protocol = valid ? new URL(baseUrl).protocol : '';
+  if (protocol !== 'https:' && protocol !== 'http:') {
     throw new Error('requestPasswordReset: baseUrl must be an absolute http(s) URL');
   }
   return baseUrl.replace(/\/+$/, '');
@@ -101,20 +95,17 @@ export async function resetPassword(
   if (!rule.ok) return { ok: false, error: 'PASSWORD_RULE', failures: rule.failures };
 
   const passwordHash = await hashPassword(newPassword);
-  try {
-    await db.$transaction(async (tx) => {
-      // Claim the token atomically, so two concurrent resets cannot both use it.
-      const now = new Date();
-      const claimed = await tx.passwordResetToken.updateMany({
-        where: { id: record.id, usedAt: null, expiresAt: { gt: now } },
-        data: { usedAt: now },
-      });
-      if (claimed.count !== 1) throw new TokenAlreadyUsedError();
-      await tx.user.update({ where: { id: record.userId }, data: { passwordHash } });
+  const saved = await db.$transaction(async (tx) => {
+    // Claim the token atomically, so two concurrent resets cannot both use it. When the claim
+    // fails nothing has been written.
+    const now = new Date();
+    const claimed = await tx.passwordResetToken.updateMany({
+      where: { id: record.id, usedAt: null, expiresAt: { gt: now } },
+      data: { usedAt: now },
     });
-  } catch (error) {
-    if (error instanceof TokenAlreadyUsedError) return { ok: false, error: 'INVALID_TOKEN' };
-    throw error;
-  }
-  return { ok: true };
+    if (claimed.count !== 1) return false;
+    await tx.user.update({ where: { id: record.userId }, data: { passwordHash } });
+    return true;
+  });
+  return saved ? { ok: true } : { ok: false, error: 'INVALID_TOKEN' };
 }
