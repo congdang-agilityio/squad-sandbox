@@ -28,7 +28,6 @@
     "privacyLink": "Read the privacy notice",
     "emailLabel": "Email",
     "passwordLabel": "Password",
-    "passwordRule": "At least 8 characters, with at least one lowercase letter (a-z), one uppercase letter (A-Z), one digit (0-9) and one keyboard symbol such as ! @ # $. Use only letters without marks, digits and keyboard symbols: letters with Vietnamese marks (such as ă, ê, ư) and spaces cannot be used.",
     "displayNameLabel": "Display name",
     "agreeLabel": "I agree to the privacy notice",
     "agreePrivacyLink": "Open the privacy notice",
@@ -40,6 +39,12 @@
     "errorPasswordRule": "This password does not meet the password rule.",
     "errorInvalidInput": "Please enter a valid email address and a display name.",
     "errorUnexpected": "Something went wrong. Please try again."
+  },
+  "passwordRule": {
+    "rule": "At least 8 characters, with at least one lowercase letter (a-z), one uppercase letter (A-Z), one digit (0-9) and one keyboard symbol such as ! @ # $. Use only letters without marks, digits and keyboard symbols: letters with Vietnamese marks (such as ă, ê, ư) and spaces cannot be used.",
+    "tooShort": "The password needs at least 8 characters.",
+    "missingType": "This password does not meet the password rule: it needs at least one lowercase letter (a-z), one uppercase letter (A-Z), one digit (0-9) and one keyboard symbol such as ! @ # $.",
+    "invalidCharacter": "Only a-z, A-Z, 0-9 and keyboard symbols may be used: letters with Vietnamese marks (such as ă, ê, ư) and spaces are not allowed."
   },
   "login": {
     "title": "Log in",

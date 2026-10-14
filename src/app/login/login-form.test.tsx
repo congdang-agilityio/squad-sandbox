@@ -59,7 +59,7 @@ describe('LoginForm', () => {
     expect(screen.getAllByRole('button')).toHaveLength(1);
     expect(screen.getByRole('button', { name: t.submit })).toBeInTheDocument();
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
-    expect(screen.queryByText(messages.signup.passwordRule)).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.passwordRule.rule)).not.toBeInTheDocument();
   });
 
   it('posts the email and password as JSON and opens /tasks on 200', async () => {

@@ -28,7 +28,6 @@
     "privacyLink": "Đọc thông báo về quyền riêng tư",
     "emailLabel": "Email",
     "passwordLabel": "Mật khẩu",
-    "passwordRule": "Ít nhất 8 ký tự, gồm ít nhất một chữ thường (a-z), một chữ hoa (A-Z), một chữ số (0-9) và một ký hiệu trên bàn phím như ! @ # $. Chỉ dùng chữ cái không dấu, chữ số và ký hiệu trên bàn phím: không được dùng chữ có dấu tiếng Việt (như ă, ê, ư) và không được dùng dấu cách.",
     "displayNameLabel": "Tên hiển thị",
     "agreeLabel": "Tôi đồng ý với thông báo về quyền riêng tư",
     "agreePrivacyLink": "Mở thông báo về quyền riêng tư",
@@ -40,6 +39,12 @@
     "errorPasswordRule": "Mật khẩu này chưa đúng quy tắc mật khẩu.",
     "errorInvalidInput": "Vui lòng nhập địa chỉ email hợp lệ và tên hiển thị.",
     "errorUnexpected": "Đã có lỗi xảy ra. Vui lòng thử lại."
+  },
+  "passwordRule": {
+    "rule": "Ít nhất 8 ký tự, gồm ít nhất một chữ thường (a-z), một chữ hoa (A-Z), một chữ số (0-9) và một ký hiệu trên bàn phím như ! @ # $. Chỉ dùng chữ cái không dấu, chữ số và ký hiệu trên bàn phím: không được dùng chữ có dấu tiếng Việt (như ă, ê, ư) và không được dùng dấu cách.",
+    "tooShort": "Mật khẩu cần có ít nhất 8 ký tự.",
+    "missingType": "Mật khẩu này chưa đúng quy tắc mật khẩu: cần có ít nhất một chữ thường (a-z), một chữ hoa (A-Z), một chữ số (0-9) và một ký hiệu trên bàn phím như ! @ # $.",
+    "invalidCharacter": "Chỉ được dùng a-z, A-Z, 0-9 và ký hiệu trên bàn phím: không được dùng chữ có dấu tiếng Việt (như ă, ê, ư) và không được dùng dấu cách."
   },
   "login": {
     "title": "Đăng nhập",

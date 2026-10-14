@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useState, type FormEvent } from 'react';
+import { PasswordRuleFeedback, toPasswordRuleFailures } from '@/components/password-rule-feedback';
+import type { PasswordRuleFailure } from '@/lib/auth/password-rule';
 
 const ERROR_KEYS = {
   AGREEMENT_REQUIRED: 'errorAgreementRequired',
@@ -11,13 +13,19 @@ const ERROR_KEYS = {
   INVALID_INPUT: 'errorInvalidInput',
 } as const;
 type ErrorKey = (typeof ERROR_KEYS)[keyof typeof ERROR_KEYS] | 'errorUnexpected';
+type Refusal = { error: ErrorKey | null; failures: PasswordRuleFailure[] };
 
-async function errorKeyFrom(response: Response): Promise<ErrorKey> {
+async function refusalFrom(response: Response): Promise<Refusal> {
   const body: unknown = await response.json().catch(() => null);
-  const code = (body as { error?: unknown } | null)?.error;
-  return typeof code === 'string' && Object.hasOwn(ERROR_KEYS, code)
-    ? ERROR_KEYS[code as keyof typeof ERROR_KEYS]
-    : 'errorUnexpected';
+  const { error: code, failures } = (body ?? {}) as { error?: unknown; failures?: unknown };
+  if (typeof code !== 'string' || !Object.hasOwn(ERROR_KEYS, code)) {
+    return { error: 'errorUnexpected', failures: [] };
+  }
+  const known = code === 'PASSWORD_RULE' ? toPasswordRuleFailures(failures) : [];
+  // Known password failures are shown by PasswordRuleFeedback instead of the general error.
+  return known.length > 0
+    ? { error: null, failures: known }
+    : { error: ERROR_KEYS[code as keyof typeof ERROR_KEYS], failures: [] };
 }
 
 const field = { display: 'flex', flexDirection: 'column', gap: '0.25rem' } as const;
@@ -27,6 +35,7 @@ export function SignUpForm() {
   const t = useTranslations('signup');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<ErrorKey | null>(null);
+  const [failures, setFailures] = useState<PasswordRuleFailure[]>([]);
   const [done, setDone] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -36,6 +45,7 @@ export function SignUpForm() {
     const text = (name: string) => String(data.get(name) ?? '');
     setSubmitting(true);
     setError(null);
+    setFailures([]);
     try {
       const response = await fetch('/api/auth/sign-up', {
         method: 'POST',
@@ -48,7 +58,9 @@ export function SignUpForm() {
         }),
       });
       if (response.status === 201) return setDone(true);
-      setError(await errorKeyFrom(response));
+      const refusal = await refusalFrom(response);
+      setError(refusal.error);
+      setFailures(refusal.failures);
     } catch {
       setError('errorUnexpected');
     } finally {
@@ -83,7 +95,7 @@ export function SignUpForm() {
           aria-describedby="signup-password-rule"
         />
       </label>
-      <small id="signup-password-rule">{t('passwordRule')}</small>
+      <PasswordRuleFeedback id="signup-password-rule" failures={failures} />
       <label style={field}>
         {t('displayNameLabel')}
         <input name="displayName" autoComplete="nickname" maxLength={100} />
@@ -97,7 +109,6 @@ export function SignUpForm() {
       {error && (
         <p role="alert" style={{ color: '#b00020', margin: 0 }}>
           {t(error)}
-          {error === 'errorPasswordRule' && ` ${t('passwordRule')}`}
         </p>
       )}
       <button type="submit" disabled={submitting}>
