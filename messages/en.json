@@ -86,6 +86,15 @@
     "priorityNormal": "Normal",
     "priorityLow": "Low"
   },
+  "newTask": {
+    "titleLabel": "Title",
+    "dueDateLabel": "Due date",
+    "dueTimeLabel": "Due time (optional)",
+    "submit": "Add task",
+    "errorTitleRequired": "A title is required",
+    "errorDueDateRequired": "A due date is required",
+    "errorUnexpected": "Something went wrong. Please try again."
+  },
   "logout": {
     "button": "Log out",
     "error": "Could not log out. Please try again."

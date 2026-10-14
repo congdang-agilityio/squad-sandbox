@@ -13,6 +13,7 @@ vi.mock('@/lib/tasks/tasks', () => ({ listTasks: vi.fn() }));
 vi.mock('next-intl/server', () => ({ getTranslations: vi.fn() }));
 // The client component has its own tests; here it only has to be on the page.
 vi.mock('./logout-button', () => ({ LogoutButton: () => <button type="button">logout</button> }));
+vi.mock('./new-task-form', () => ({ NewTaskForm: () => <form aria-label="new task" /> }));
 
 const user = { id: 'u1', email: 'ana@example.com', displayName: 'Ana' };
 const anasTask: TaskView = {
@@ -94,6 +95,15 @@ describe('Task list page', () => {
     renderPage(await TasksPage());
 
     expect(screen.getByRole('button', { name: 'logout' })).toBeInTheDocument();
+  });
+
+  it('shows the create-task form', async () => {
+    vi.mocked(requireUser).mockResolvedValue(user);
+    withLocale('en', en);
+
+    renderPage(await TasksPage());
+
+    expect(screen.getByRole('form', { name: 'new task' })).toBeInTheDocument();
   });
 
   it('shows "My tasks" in English', () => {

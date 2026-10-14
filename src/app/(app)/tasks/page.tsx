@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { requireUser } from '@/lib/auth/require-user';
 import { listTasks } from '@/lib/tasks/tasks';
 import { LogoutButton } from './logout-button';
+import { NewTaskForm } from './new-task-form';
 import { TaskList } from './task-list';
 
 export default async function TasksPage() {
@@ -12,6 +13,7 @@ export default async function TasksPage() {
   return (
     <main style={{ maxWidth: '40rem', margin: '0 auto', padding: '1rem', lineHeight: 1.5 }}>
       <h1>{t('title')}</h1>
+      <NewTaskForm />
       <TaskList tasks={tasks} />
       <LogoutButton />
     </main>
