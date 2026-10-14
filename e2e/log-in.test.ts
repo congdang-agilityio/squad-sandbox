@@ -44,6 +44,7 @@ test('offers only email and password login, plus links to reset the password and
   await page.goto('/login');
   const main = page.getByRole('main');
 
+  await expect(page).toHaveTitle('Log in · TodoNow');
   await expect(main.getByRole('button')).toHaveCount(1);
   await expect(main.getByRole('button', { name: 'Log in' })).toBeVisible();
   await expect(main.getByRole('link')).toHaveCount(2);
