@@ -76,6 +76,19 @@ describe('LoginForm', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('keeps the button disabled after 200 while /tasks opens, so a second tap cannot log in twice', async () => {
+    respond(200, { ok: true });
+    renderForm();
+    fillInAndSubmit();
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith('/tasks'));
+    // Let the submit handler finish (its finally block) before checking the button.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(screen.getByRole('button', { name: 'Log in' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Log in' }));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it('on 401 shows the incorrect credentials message, keeps the email and clears the password', async () => {
     respond(401, { error: 'INVALID_CREDENTIALS' });
     renderForm();

@@ -25,13 +25,17 @@ export function LoginForm() {
     const text = (name: string) => String(data.get(name) ?? '');
     setSubmitting(true);
     setError(null);
+    let loggedIn = false;
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: text('email'), password: text('password') }),
       });
-      if (response.status === 200) return router.replace('/tasks');
+      if (response.status === 200) {
+        loggedIn = true;
+        return router.replace('/tasks');
+      }
       // A malformed input is reported like wrong credentials: no hint about which part is wrong.
       setError(
         response.status === 401 || response.status === 400
@@ -44,7 +48,9 @@ export function LoginForm() {
       // The email stays as typed; the password is never kept.
       const password = form.elements.namedItem('password');
       if (password instanceof HTMLInputElement) password.value = '';
-      setSubmitting(false);
+      // After a login the button stays disabled until /tasks opens: a second tap would create
+      // a second session for this device.
+      if (!loggedIn) setSubmitting(false);
     }
   }
 
