@@ -114,6 +114,23 @@ describe('POST /api/auth/password-reset/request', () => {
     expect(mails[0].text).toMatch(/http:\/\/localhost:4101\/reset-password\?token=/);
   });
 
+  it('in production without APP_BASE_URL, sends nothing, logs the reason and still returns 202', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('APP_BASE_URL', '');
+    await createUser();
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const forged = { Host: 'evil.test', 'X-Forwarded-Host': 'evil.test' };
+    const res = await POST(request({ email: EMAIL }, { headers: forged }));
+
+    expect(res.status).toBe(202);
+    expect(await res.json()).toEqual({ ok: true });
+    expect(await readOutbox()).toHaveLength(0);
+    expect(await db.passwordResetToken.count()).toBe(0);
+    expect(logged).toHaveBeenCalledWith('Password reset request failed: APP_BASE_URL is not set');
+    expect(JSON.stringify(logged.mock.calls)).not.toContain(EMAIL);
+  });
+
   it('still returns 202 { ok: true } when sending the email fails, so accounts cannot be enumerated', async () => {
     await createUser();
     // Neither SMTP_URL nor MAIL_OUTBOX_DIR: sendMail throws.
@@ -125,6 +142,10 @@ describe('POST /api/auth/password-reset/request', () => {
     expect(res.status).toBe(202);
     expect(await res.json()).toEqual({ ok: true });
     expect(logged).toHaveBeenCalled();
+    // The log must not leak the reset link or the email address.
+    const loggedText = logged.mock.calls.flat().map(String).join(' ');
+    expect(loggedText).not.toContain('reset-password?token=');
+    expect(loggedText).not.toContain(EMAIL);
   });
 
   it.each([

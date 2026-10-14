@@ -24,7 +24,16 @@ export async function POST(request: Request): Promise<Response> {
   if (!isRequestInput(body)) return Response.json({ error: 'INVALID_INPUT' }, { status: 400 });
 
   const locale = resolveLocale(request.headers.get('accept-language'));
-  const baseUrl = process.env.APP_BASE_URL || new URL(request.url).origin;
+  // The request origin comes from the Host / X-Forwarded-Host headers, which a client controls.
+  // Using it in production would let an attacker get a victim's reset link pointed at their own
+  // domain (reset poisoning), so production fails closed without APP_BASE_URL.
+  const baseUrl =
+    process.env.APP_BASE_URL ||
+    (process.env.NODE_ENV === 'production' ? undefined : new URL(request.url).origin);
+  if (!baseUrl) {
+    console.error('Password reset request failed: APP_BASE_URL is not set');
+    return Response.json({ ok: true }, { status: 202 });
+  }
   try {
     await requestPasswordReset(body.email, { locale, baseUrl });
   } catch (error) {
