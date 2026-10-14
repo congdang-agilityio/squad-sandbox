@@ -15,6 +15,9 @@ export default async function LoginPage() {
       <h1>{t('title')}</h1>
       <LoginForm />
       <p>
+        <Link href="/forgot-password">{t('forgotPasswordLink')}</Link>
+      </p>
+      <p>
         {t('noAccount')} <Link href="/signup">{t('signUpLink')}</Link>
       </p>
     </main>

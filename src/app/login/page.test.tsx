@@ -45,7 +45,7 @@ describe('Login page', () => {
     ['en', en],
     ['vi', viMessages],
   ] as const)(
-    'shows the %s heading, the form and a link to sign up when logged out',
+    'shows the %s heading, the form, a forgot-password link and a link to sign up when logged out',
     async (locale, messages) => {
       vi.mocked(getCurrentUser).mockResolvedValue(null);
       intl.locale = locale;
@@ -67,7 +67,11 @@ describe('Login page', () => {
         'href',
         '/signup',
       );
-      expect(screen.getAllByRole('link')).toHaveLength(1);
+      expect(screen.getByRole('link', { name: messages.login.forgotPasswordLink })).toHaveAttribute(
+        'href',
+        '/forgot-password',
+      );
+      expect(screen.getAllByRole('link')).toHaveLength(2);
     },
   );
 });

@@ -39,7 +39,13 @@ export default defineConfig({
     timeout: 180_000,
     // `next start` runs with NODE_ENV=production, so the session cookie would be Secure, and
     // WebKit does not store a Secure cookie on http://localhost.
-    // SMTP_URL is cleared so e2e never sends a real email.
-    env: { SESSION_COOKIE_SECURE: 'false', SMTP_URL: '', MAIL_OUTBOX_DIR: mailOutboxDir },
+    // SMTP_URL is cleared so e2e never sends a real email. APP_BASE_URL is required in
+    // production mode for the password reset link.
+    env: {
+      SESSION_COOKIE_SECURE: 'false',
+      SMTP_URL: '',
+      MAIL_OUTBOX_DIR: mailOutboxDir,
+      APP_BASE_URL: baseURL,
+    },
   },
 });

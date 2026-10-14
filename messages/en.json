@@ -53,7 +53,28 @@
     "submit": "Log in",
     "noAccount": "No account yet?",
     "signUpLink": "Sign up",
+    "forgotPasswordLink": "Forgot password?",
     "errorInvalidCredentials": "The email or password is incorrect.",
+    "errorUnexpected": "Something went wrong. Please try again."
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "intro": "Enter the email of your account. We will send you a link to set a new password.",
+    "emailLabel": "Email",
+    "submit": "Send reset link",
+    "sent": "If an account exists for this email, we sent an email with a link to set a new password. The link works once and expires in 1 hour.",
+    "loginLink": "Back to log in",
+    "errorUnexpected": "Something went wrong. Please try again."
+  },
+  "resetPassword": {
+    "title": "Set a new password",
+    "passwordLabel": "New password",
+    "submit": "Save new password",
+    "success": "Your new password is saved.",
+    "loginLink": "Log in",
+    "invalidLink": "This link is invalid or has expired.",
+    "forgotPasswordLink": "Request a new link",
+    "errorPasswordRule": "This password does not meet the password rule.",
     "errorUnexpected": "Something went wrong. Please try again."
   },
   "tasks": {
